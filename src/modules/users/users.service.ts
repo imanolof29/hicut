@@ -67,7 +67,7 @@ export class UsersService {
 
     async updateUser(id: string, dto: UpdateUserDto): Promise<void> {
         try {
-            const user = this.userRepository.findOneBy({ id })
+            const user = await this.userRepository.findOneBy({ id })
             if (!user) throw new NotFoundException(`User with ID ${id} not found`)
             Object.assign(user, dto)
             await this.userRepository.save(user)

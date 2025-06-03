@@ -11,9 +11,7 @@ export class SessionsService {
 
   constructor(
     @InjectRepository(SessionEntity)
-    private readonly sessionRepository: Repository<SessionEntity>,
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>
+    private readonly sessionRepository: Repository<SessionEntity>
   ) { }
 
   async create(userId: string): Promise<SessionEntity> {
