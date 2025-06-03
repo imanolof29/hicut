@@ -1,19 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SessionEntity } from './entities/session.entity';
 import { Repository } from 'typeorm';
+import { UserEntity } from '../users/entity/user.entity';
 
 @Injectable()
 export class SessionsService {
 
+  private readonly logger = new Logger(SessionsService.name)
+
   constructor(
     @InjectRepository(SessionEntity)
-    private readonly sessionRepository: Repository<SessionEntity>
+    private readonly sessionRepository: Repository<SessionEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>
   ) { }
+
+  async create(userId: string): Promise<SessionEntity> {
+    const session = await this.sessionRepository.create({
+      userId
+    })
+    await this.sessionRepository.save(session)
+    return session
+  }
 
 
   async findAllForUser(userId: string) {
-    return this.sessionRepository.find({
+    return await this.sessionRepository.find({
       where: { userId },
     })
   }
@@ -26,6 +39,15 @@ export class SessionsService {
     }
 
     return session;
+  }
+
+  async invalidate(id: string) {
+    const session = await this.sessionRepository.findOneBy({ id })
+    if (!session) {
+      throw new Error(`Session with id ${id} not found`);
+    }
+    session.active = false
+    this.sessionRepository.save(session)
   }
 
   async delete(id: string) {

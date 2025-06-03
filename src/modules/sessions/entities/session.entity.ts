@@ -1,4 +1,3 @@
-
 import { UserEntity } from "src/modules/users/entity/user.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
@@ -13,6 +12,9 @@ export class SessionEntity {
 
     @Column({ type: "uuid" })
     userId: string;
+
+    @Column({ type: "boolean" })
+    active: boolean
 
     @CreateDateColumn()
     createdAt: Date;

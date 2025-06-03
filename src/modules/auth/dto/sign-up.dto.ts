@@ -1,7 +1,6 @@
-export class UserDto {
-    id: string
+export class SignUpDto {
     firstName: string
     lastName: string
     email: string
-    avatar?: string
+    password: string
 }

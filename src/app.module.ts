@@ -6,6 +6,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { SessionsModule } from './modules/sessions/sessions.module';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { BusinessesModule } from './modules/businesses/businesses.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         synchronize: true,
       }),
     }),
+    BusinessesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
