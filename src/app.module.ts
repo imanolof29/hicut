@@ -7,12 +7,15 @@ import { SessionsModule } from './modules/sessions/sessions.module';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BusinessesModule } from './modules/businesses/businesses.module';
+import { AppointmentsModule } from './modules/appointments/appointments.module';
 
 @Module({
   imports: [
     UsersModule,
     AuthModule,
     SessionsModule,
+    BusinessesModule,
+    AppointmentsModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -27,7 +30,6 @@ import { BusinessesModule } from './modules/businesses/businesses.module';
         synchronize: true,
       }),
     }),
-    BusinessesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

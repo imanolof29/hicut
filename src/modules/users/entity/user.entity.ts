@@ -1,3 +1,4 @@
+import { AppointmentEntity } from "src/modules/appointments/entity/appointment.entity";
 import { AuthProviderEnum } from "src/modules/auth/auth-provider.enum";
 import { SessionEntity } from "src/modules/sessions/entities/session.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
@@ -54,6 +55,9 @@ export class UserEntity {
 
     @OneToMany(() => SessionEntity, session => session.user)
     sessions: SessionEntity[];
+
+    @OneToMany(() => AppointmentEntity, appointment => appointment.user)
+    appointments: AppointmentEntity[]
 
     @CreateDateColumn()
     createdAt: Date;

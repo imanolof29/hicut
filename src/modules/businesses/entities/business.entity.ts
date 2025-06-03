@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { AppointmentEntity } from "src/modules/appointments/entity/appointment.entity";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity("businesses")
 export class BusinessEntity {
@@ -16,6 +17,9 @@ export class BusinessEntity {
 
     @Column()
     address: string
+
+    @OneToMany(() => AppointmentEntity, appointment => appointment.business)
+    appointments: AppointmentEntity[]
 
     @Column({ default: true })
     isActive: boolean
