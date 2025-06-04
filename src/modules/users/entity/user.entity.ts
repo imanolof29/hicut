@@ -1,7 +1,8 @@
 import { AppointmentEntity } from "src/modules/appointments/entity/appointment.entity";
 import { AuthProviderEnum } from "src/modules/auth/auth-provider.enum";
+import { BusinessEntity } from "src/modules/businesses/entities/business.entity";
 import { SessionEntity } from "src/modules/sessions/entities/session.entity";
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export enum UserRoleEnum {
     CLIENT = "client",
@@ -58,6 +59,12 @@ export class UserEntity {
 
     @OneToMany(() => AppointmentEntity, appointment => appointment.user)
     appointments: AppointmentEntity[]
+
+    @OneToMany(() => BusinessEntity, business => business.owner)
+    ownedBusinesses: BusinessEntity[];
+
+    @ManyToMany(() => BusinessEntity, business => business.employees)
+    workplaces: BusinessEntity[];
 
     @CreateDateColumn()
     createdAt: Date;
