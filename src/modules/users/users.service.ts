@@ -28,12 +28,17 @@ export class UsersService {
     ) { }
 
     async findById(id: string): Promise<UserDto> {
+        const dto = await this.findEntityById(id)
+        return this.mapToDto(dto)
+    }
+
+    async findEntityById(id: string): Promise<UserEntity> {
         try {
             const user = await this.userRepository.findOneBy({ id })
             if (!user) {
                 throw new NotFoundException(`User with ID ${id} not found`)
             }
-            return this.mapToDto(user)
+            return user
         } catch (error) {
             this.logger.error(`Error checking if the user exists with ID ${id}: `, error)
             throw error

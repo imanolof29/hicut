@@ -1,27 +1,32 @@
+import { RefreshTokenEntity } from "src/modules/auth/entity/refresh-token.entity";
 import { UserEntity } from "src/modules/users/entity/user.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity("sessions")
+@Index(['userId', 'active'])
 export class SessionEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'userId' })
-    user: UserEntity;
-
-    @Column({ type: "uuid" })
+    @Column({ name: 'user_id', type: "uuid" })
     userId: string;
 
-    @Column({ type: "boolean" })
-    active: boolean
+    @ManyToOne(() => UserEntity, user => user.sessions, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'user_id' })
+    user: UserEntity;
 
-    @CreateDateColumn()
+    @Column({ type: "boolean", default: true })
+    active: boolean;
+
+    @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
 
-    @Column({ type: "timestamp", nullable: true })
+    @Column({ name: 'refreshed_at', type: "timestamp", nullable: true })
     refreshedAt: Date;
+
+    @OneToMany(() => RefreshTokenEntity, refreshToken => refreshToken.session)
+    refreshTokens: RefreshTokenEntity[];
 }

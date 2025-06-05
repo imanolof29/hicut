@@ -1,8 +1,9 @@
 import { AppointmentEntity } from "src/modules/appointments/entity/appointment.entity";
 import { AuthProviderEnum } from "src/modules/auth/auth-provider.enum";
+import { RefreshTokenEntity } from "src/modules/auth/entity/refresh-token.entity";
 import { BusinessEntity } from "src/modules/businesses/entities/business.entity";
 import { SessionEntity } from "src/modules/sessions/entities/session.entity";
-import { Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export enum UserRoleEnum {
     CLIENT = "client",
@@ -12,14 +13,16 @@ export enum UserRoleEnum {
 }
 
 @Entity("users")
+@Index(['email'])
+@Index(['phone'])
 export class UserEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column({ type: "varchar", length: 100 })
+    @Column({ name: 'first_name', type: "varchar", length: 100 })
     firstName: string;
 
-    @Column({ type: "varchar", length: 100 })
+    @Column({ name: 'last_name', type: "varchar", length: 100 })
     lastName: string;
 
     @Column({ type: "varchar", length: 255, unique: true })
@@ -48,17 +51,20 @@ export class UserEntity {
     @Column({ type: "varchar", length: 255, nullable: true })
     avatar: string;
 
-    @Column({ type: "varchar", length: 255, nullable: true })
+    @Column({ name: 'confirmation_token', type: "varchar", length: 255, nullable: true })
     confirmationToken: string;
 
-    @Column({ type: "boolean", default: true })
+    @Column({ name: 'is_active', type: "boolean", default: true })
     isActive: boolean;
 
     @OneToMany(() => SessionEntity, session => session.user)
     sessions: SessionEntity[];
 
+    @OneToMany(() => RefreshTokenEntity, refreshToken => refreshToken.user)
+    refreshTokens: RefreshTokenEntity[];
+
     @OneToMany(() => AppointmentEntity, appointment => appointment.user)
-    appointments: AppointmentEntity[]
+    appointments: AppointmentEntity[];
 
     @OneToMany(() => BusinessEntity, business => business.owner)
     ownedBusinesses: BusinessEntity[];
@@ -66,9 +72,9 @@ export class UserEntity {
     @ManyToMany(() => BusinessEntity, business => business.employees)
     workplaces: BusinessEntity[];
 
-    @CreateDateColumn()
+    @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
 }

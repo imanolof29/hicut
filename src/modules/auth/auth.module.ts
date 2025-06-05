@@ -8,16 +8,18 @@ import { ConfigModule } from '@nestjs/config';
 import { SessionsModule } from '../sessions/sessions.module';
 import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
+import { RefreshTokenEntity } from './entity/refresh-token.entity';
+import { RefreshTokenService } from './refresh-token.service';
 
 @Module({
   imports: [
     ConfigModule,
     SessionsModule,
     UsersModule,
-    TypeOrmModule.forFeature([UserEntity, SessionEntity]),
+    TypeOrmModule.forFeature([UserEntity, SessionEntity, RefreshTokenEntity]),
     JwtModule.register({})
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, RefreshTokenService],
 })
 export class AuthModule { }

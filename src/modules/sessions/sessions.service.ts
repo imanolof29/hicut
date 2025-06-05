@@ -48,6 +48,21 @@ export class SessionsService {
     this.sessionRepository.save(session)
   }
 
+  async isValid(sessionId: string): Promise<boolean> {
+    const session = await this.sessionRepository.findOne({
+      where: { id: sessionId, active: true }
+    });
+
+    return !!session;
+  }
+
+  async updateRefreshedAt(sessionId: string): Promise<void> {
+    await this.sessionRepository.update(
+      { id: sessionId },
+      { refreshedAt: new Date() }
+    );
+  }
+
   async delete(id: string) {
     const session = await this.sessionRepository.findOneBy({ id });
     if (!session) {
