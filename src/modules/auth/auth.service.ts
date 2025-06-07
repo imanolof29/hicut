@@ -10,6 +10,7 @@ import { AuthProviderEnum } from './auth-provider.enum';
 import { UserEntity, UserRoleEnum } from '../users/entity/user.entity';
 import { SignInDto } from './dto/sign-in.dto';
 import { RefreshTokenService } from './refresh-token.service';
+import { AuthDto } from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +25,7 @@ export class AuthService {
         private readonly configService: ConfigService
     ) { }
 
-    async signUp(dto: SignUpDto, deviceInfo?: string, ipAddress?: string) {
+    async signUp(dto: SignUpDto, deviceInfo?: string, ipAddress?: string): Promise<AuthDto> {
         const existingUser = await this.usersService.findByEmail(dto.email);
         if (existingUser) {
             throw new ConflictException('User with this email already exists');
@@ -47,7 +48,7 @@ export class AuthService {
         return await this.createAuthSession(newUser, deviceInfo, ipAddress);
     }
 
-    async signIn(dto: SignInDto, deviceInfo?: string, ipAddress?: string) {
+    async signIn(dto: SignInDto, deviceInfo?: string, ipAddress?: string): Promise<AuthDto> {
         try {
             const user = await this.usersService.findByEmail(dto.email);
 
@@ -80,7 +81,7 @@ export class AuthService {
         }
     }
 
-    async refreshTokens(refreshToken: string) {
+    async refreshTokens(refreshToken: string): Promise<AuthDto> {
         try {
             const payload = this.jwtService.verify(refreshToken, {
                 secret: this.configService.get<string>('REFRESH_SECRET')
@@ -165,7 +166,7 @@ export class AuthService {
         return await bcrypt.compare(password, hashedPassword);
     }
 
-    private async createAuthSession(user: UserEntity, deviceInfo?: string, ipAddress?: string) {
+    private async createAuthSession(user: UserEntity, deviceInfo?: string, ipAddress?: string): Promise<AuthDto> {
         try {
             const session = await this.sessionService.create(user.id);
 
