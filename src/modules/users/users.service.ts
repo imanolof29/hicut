@@ -27,6 +27,11 @@ export class UsersService {
         private readonly userRepository: Repository<UserEntity>
     ) { }
 
+    async findAll(): Promise<UserDto[]> {
+        const users = await this.userRepository.find()
+        return users.map(this.mapToDto)
+    }
+
     async findById(id: string): Promise<UserDto> {
         const dto = await this.findEntityById(id)
         return this.mapToDto(dto)
