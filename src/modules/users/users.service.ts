@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { UserDto } from './dto/user.dto';
 import { AuthProviderEnum } from '../auth/auth-provider.enum';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 
 interface UserData {
     firstName: string,
@@ -71,6 +72,18 @@ export class UsersService {
             return this.userRepository.save(newUser)
         } catch (error) {
             this.logger.error('Error creating user: ', error)
+            throw error
+        }
+    }
+
+    async createAdminUser(dto: CreateUserDto): Promise<void> {
+        try {
+            const newUser = await this.userRepository.create({
+                ...dto
+            })
+            await this.userRepository.save(newUser)
+        } catch (error) {
+            this.logger.error('Error creating admin user: ', error)
             throw error
         }
     }

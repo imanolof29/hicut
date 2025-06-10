@@ -3,6 +3,10 @@ import { ApiTags } from "@nestjs/swagger";
 import { BusinessServicesService } from "./business-services.service";
 import { BusinessServiceDto } from "./dto/business-service.dto";
 import { CreateBusinessServiceDto } from "./dto/create-business-service.dto";
+import { Auth } from "../auth/decorator/auth.decorator";
+import { RoleGuard } from "../auth/guards/role.guard";
+import { UserRoleEnum } from "../users/entity/user.entity";
+import { RoleProtected } from "../auth/decorator/role.decorator";
 
 @ApiTags('BusinessService')
 @Controller('businesses/:businessId/services')
@@ -17,6 +21,8 @@ export class BusinessServicesController {
     }
 
     @Post('create')
+    @Auth()
+    @RoleProtected(UserRoleEnum.SALON_OWNER, UserRoleEnum.ADMIN)
     async create(
         @Param('businessId') id: string,
         @Body() dto: CreateBusinessServiceDto

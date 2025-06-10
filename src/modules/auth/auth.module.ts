@@ -10,6 +10,7 @@ import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { RefreshTokenEntity } from './entity/refresh-token.entity';
 import { RefreshTokenService } from './refresh-token.service';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -17,9 +18,11 @@ import { RefreshTokenService } from './refresh-token.service';
     SessionsModule,
     UsersModule,
     TypeOrmModule.forFeature([UserEntity, SessionEntity, RefreshTokenEntity]),
-    JwtModule.register({})
+    JwtModule.register({}),
+    PassportModule.register({ defaultStrategy: 'jwt' })
   ],
   controllers: [AuthController],
   providers: [AuthService, RefreshTokenService],
+  exports: [PassportModule, JwtModule]
 })
 export class AuthModule { }

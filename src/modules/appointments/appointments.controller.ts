@@ -4,12 +4,14 @@ import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { RequestUser } from '../auth/types/request-user';
 import { AppointmentDto } from './dto/appointment.dto';
+import { Auth } from '../auth/decorator/auth.decorator';
 
 @Controller('appointments')
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) { }
 
   @Post('create')
+  @Auth()
   async create(
     @Body() dto: CreateAppointmentDto,
     @CurrentUser() user: RequestUser
@@ -34,6 +36,7 @@ export class AppointmentsController {
   }
 
   @Patch(':id')
+  @Auth()
   async cancel(
     @Param('businessId') businessId: string,
     @CurrentUser() user: RequestUser
