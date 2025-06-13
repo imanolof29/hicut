@@ -13,7 +13,7 @@ export class BusinessEntity {
     @Column({ type: "varchar", unique: true })
     email: string
 
-    @Column()
+    @Column({ nullable: true })
     logo: string
 
     @Column()
@@ -32,13 +32,13 @@ export class BusinessEntity {
     @JoinColumn({ name: 'ownerId' })
     owner: UserEntity
 
-    @ManyToMany(() => UserEntity, user => user.workplaces, { eager: false })
+    @ManyToMany(() => UserEntity, user => user.workplace, { eager: false })
     @JoinTable({
         name: 'business_employees',
         joinColumn: { name: 'businessId', referencedColumnName: 'id' },
         inverseJoinColumn: { name: 'userId', referencedColumnName: 'id' }
     })
-    employees: UserEntity[]
+    employees: UserEntity[];
 
     @CreateDateColumn()
     createdAt: Date

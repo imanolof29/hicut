@@ -126,9 +126,9 @@ export class AuthService {
         const payload = {
             sub: user.id,
             email: user.email,
-            sessionId
+            sessionId,
+            role: user.role
         };
-
         const accessToken = this.jwtService.sign(payload, {
             secret: this.configService.get<string>('JWT_SECRET'),
             expiresIn: this.configService.get<string>('JWT_EXPIRES_IN')
@@ -158,7 +158,8 @@ export class AuthService {
             id: userEntity.id,
             firstName: userEntity.firstName,
             lastName: userEntity.lastName,
-            email: userEntity.email
+            email: userEntity.email,
+            role: userEntity.role
         };
     }
 

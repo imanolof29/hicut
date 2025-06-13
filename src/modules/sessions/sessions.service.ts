@@ -39,6 +39,15 @@ export class SessionsService {
     return session;
   }
 
+  async findByIdAndUser(id: string, userId: string): Promise<SessionEntity | null> {
+    return this.sessionRepository.findOne({
+      where: {
+        id,
+        userId
+      }
+    })
+  }
+
   async invalidate(id: string) {
     const session = await this.sessionRepository.findOneBy({ id })
     if (!session) {

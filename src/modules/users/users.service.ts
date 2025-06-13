@@ -6,6 +6,7 @@ import { UserDto } from './dto/user.dto';
 import { AuthProviderEnum } from '../auth/auth-provider.enum';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
+import { BusinessEntity } from '../businesses/entities/business.entity';
 
 interface UserData {
     firstName: string,
@@ -25,7 +26,9 @@ export class UsersService {
 
     constructor(
         @InjectRepository(UserEntity)
-        private readonly userRepository: Repository<UserEntity>
+        private readonly userRepository: Repository<UserEntity>,
+        @InjectRepository(BusinessEntity)
+        private readonly businessRepository: Repository<BusinessEntity>
     ) { }
 
     async findAll(): Promise<UserDto[]> {
@@ -51,12 +54,9 @@ export class UsersService {
         }
     }
 
-    async findByEmail(email: string): Promise<UserEntity> {
+    async findByEmail(email: string): Promise<UserEntity | null> {
         try {
             const user = await this.userRepository.findOneBy({ email })
-            if (!user) {
-                throw new NotFoundException(`User with EMAIL ${email} not found`)
-            }
             return user
         } catch (error) {
             this.logger.error(`Error checking if the user exists with EMAIL ${email}: `, error)
@@ -98,6 +98,19 @@ export class UsersService {
             this.logger.error('Error updating user: ', error)
             throw error
         }
+    }
+
+    async getMyWorkplaceEmployees(userId: string): Promise<UserDto[]> {
+        const business = await this.businessRepository.findOne({
+            where: { ownerId: userId },
+            relations: ['employees', 'owner'],
+        });
+
+        if (!business) {
+            throw new NotFoundException('No tienes un negocio registrado.');
+        }
+
+        return business.employees.map(this.mapToDto)
     }
 
     private mapToDto(user: UserEntity): UserDto {

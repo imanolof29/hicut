@@ -3,7 +3,7 @@ import { AuthProviderEnum } from "src/modules/auth/auth-provider.enum";
 import { RefreshTokenEntity } from "src/modules/auth/entity/refresh-token.entity";
 import { BusinessEntity } from "src/modules/businesses/entities/business.entity";
 import { SessionEntity } from "src/modules/sessions/entities/session.entity";
-import { Column, CreateDateColumn, Entity, Index, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export enum UserRoleEnum {
     CLIENT = "client",
@@ -66,11 +66,15 @@ export class UserEntity {
     @OneToMany(() => AppointmentEntity, appointment => appointment.user)
     appointments: AppointmentEntity[];
 
-    @OneToMany(() => BusinessEntity, business => business.owner)
-    ownedBusinesses: BusinessEntity[];
+    @OneToOne(() => BusinessEntity, business => business.owner)
+    ownedBusiness: BusinessEntity;
 
-    @ManyToMany(() => BusinessEntity, business => business.employees)
-    workplaces: BusinessEntity[];
+    @Column({ type: "uuid", nullable: true, name: 'workplace_id' })
+    workplaceId: string;
+
+    @ManyToOne(() => BusinessEntity, business => business.employees, { nullable: true })
+    @JoinColumn({ name: 'workplace_id' })
+    workplace: BusinessEntity;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;

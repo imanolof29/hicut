@@ -2,7 +2,7 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { BusinessEntity } from './entities/business.entity';
 import { Repository } from 'typeorm';
-import { UserEntity } from '../users/entity/user.entity';
+import { UserEntity, UserRoleEnum } from '../users/entity/user.entity';
 import { BusinessDto } from './dto/business.dto';
 import { CreateBusinessDto } from './dto/create-business.dto';
 
@@ -33,6 +33,9 @@ export class BusinessesService {
             owner
         })
         await this.businessRepository.save(business)
+        await this.userRepository.update(userId, {
+            role: UserRoleEnum.SALON_OWNER
+        })
     }
 
     async findOne(id: string): Promise<BusinessDto> {

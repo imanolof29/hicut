@@ -14,16 +14,20 @@ import { AppointmentsModule } from './modules/appointments/appointments.module';
     SessionsModule,
     BusinessesModule,
     AppointmentsModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService): TypeOrmModuleOptions => ({
+      useFactory: (): TypeOrmModuleOptions => ({
         type: 'postgres',
-        host: configService.get<string>('DATABASE_HOST'),
-        port: configService.get<number>('DATABASE_PORT'),
-        username: configService.get<string>('DATABASE_USER'),
-        password: configService.get<string>('DATABASE_PASSWORD'),
-        database: configService.get<string>('DATABASE_NAME'),
+        host: 'localhost',
+        port: 5432,
+        username: 'imanolortiz',
+        password: '',
+        database: 'hicut',
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true,
       }),
